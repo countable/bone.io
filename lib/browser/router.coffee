@@ -24,6 +24,7 @@ bone.router = (options) ->
                 route: route
                 callback: options[action]
                 router: options
+                action: action
         options.initialize() if options.initialize?
 
 bone.router.start = (options) ->
@@ -35,4 +36,5 @@ bone.router.start = (options) ->
 bone.router.navigate = (route, options) ->
     bone.history.navigate route, options
 
-
+bone.router.refresh = ->
+    bone.history.refresh

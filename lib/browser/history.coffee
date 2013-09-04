@@ -137,7 +137,13 @@ class bone.History
   handlers: []
 
   loadUrl: (fragmentOverride) ->
-    fragment = @fragment = @getFragment(fragmentOverride)
+    @fragment = @getFragment(fragmentOverride)
+    @refresh()
+
+
+  # Apply matching handlers
+  refresh: ->
+    fragment = @fragment
     for handler in @handlers
         if handler.route.test fragment
             args = handler.route.exec(fragment).slice 1
@@ -145,11 +151,12 @@ class bone.History
                 bone.log "Route: [#{handler.route}:#{fragment}]", args
             handler.router.middleware ?= []
             bone.async.eachSeries handler.router.middleware, (callback, next) ->
-                callback.apply handler.router, [fragment, next]
+                callback.apply handler.router, [fragment, next, handler.action]
             , ->
                 handler.callback.apply handler.router, args
             return true
-  
+
+
   # Save a fragment into the hash history, or replace the URL state if the
   # 'replace' option is passed. You are responsible for properly URL-encoding
   # the fragment in advance.

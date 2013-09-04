@@ -323,9 +323,14 @@ bone.History = (function() {
   History.prototype.handlers = [];
 
   History.prototype.loadUrl = function(fragmentOverride) {
+    this.fragment = this.getFragment(fragmentOverride);
+    return this.refresh();
+  };
+
+  History.prototype.refresh = function() {
     var args, fragment, handler, _base, _i, _len, _ref, _ref1;
 
-    fragment = this.fragment = this.getFragment(fragmentOverride);
+    fragment = this.fragment;
     _ref = this.handlers;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       handler = _ref[_i];
@@ -338,7 +343,7 @@ bone.History = (function() {
           _base.middleware = [];
         }
         bone.async.eachSeries(handler.router.middleware, function(callback, next) {
-          return callback.apply(handler.router, [fragment, next]);
+          return callback.apply(handler.router, [fragment, next, handler.action]);
         }, function() {
           return handler.callback.apply(handler.router, args);
         });
@@ -608,7 +613,8 @@ bone.router = function(options) {
       bone.router.handlers.push({
         route: route,
         callback: options[action],
-        router: options
+        router: options,
+        action: action
       });
     }
     if (options.initialize != null) {
@@ -627,6 +633,10 @@ bone.router.start = function(options) {
 
 bone.router.navigate = function(route, options) {
   return bone.history.navigate(route, options);
+};
+
+bone.router.refresh = function() {
+  return bone.history.refresh;
 };
 
 var $;
