@@ -636,7 +636,7 @@ bone.router.navigate = function(route, options) {
 };
 
 bone.router.refresh = function() {
-  return bone.history.refresh;
+  return bone.history.refresh();
 };
 
 var $;

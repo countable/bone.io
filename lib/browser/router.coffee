@@ -37,4 +37,4 @@ bone.router.navigate = (route, options) ->
     bone.history.navigate route, options
 
 bone.router.refresh = ->
-    bone.history.refresh
+    bone.history.refresh()
